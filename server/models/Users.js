@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 var jwt = require('jsonwebtoken');
+var nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt-nodejs');
 const settings = require('../config/settings');
 
@@ -64,73 +65,75 @@ function registration() {
 
 }
 
-registration.prototype.findByEmail = function(username) {
+registration.prototype.sendMail = function(username,subject,text) {
     return new Promise(function(resolve,reject) {
-        User.findOne({username: username},function(err,newuser) {
-            if(!newuser) {
-                resolve(newuser);
-            }
-            else {
-                reject(err);
+        var smtpTransport = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'sadesale94@gmail.com',
+                pass: 'Sdesale25#' 
             }
         });
-    });
+        var mailOptions = {
+            to: username,
+            from: 'sadesale94@gmail.com',
+            subject: subject,
+            text: text
+        };
+        smtpTransport.sendMail(mailOptions, function(err) {
+            resolve(true);
+        });
+    })
 },
 
-registration.prototype.register = function(userData) {
-    var user = new User(userData);
-    return new Promise(function(resolve,reject) {
-
-        if(userData.password === userData.confirmPassword) {
-            var newUser = new User({
-                'firstname': user.firstname,
-                'lastname': user.lastname,
-                'username': user.username,
-                'password': user.password
-            });
-    
-            newUser.save()
-                .then(user => {
-                    resolve('User register successfully.',user);
-                })
-                .catch(err => {
-                reject(err);
-            });
+registration.prototype.findByEmail = function(username,callback) {
+    User.findOne({username: username},function(err,newuser) {
+        if(newuser) {
+            console.log("New user..",newuser);
+            callback(null,newuser);
         }
         else {
-            reject('Password does not match.');
+            console.log("Error...",err);
+            callback(err,null);
         }
     });
 },
 
-registration.prototype.login = function(loginDetails) {
-    var user = new User(loginDetails);
-    return new Promise(function(resolve,reject) {
-        User.findOne({
-            username: user.username
-        }, function(err, loginuser) {
-            if(err) throw err;
-            
-            if(!loginuser) {
-                reject("Authentication failed, User not found.");
-            }
-            else {
-                //check if password matches
-                bcrypt.compare(user.password, loginuser.password, function(err, isMatch) {
-                    if(isMatch && !err) {
-                        //if user is found and password is right create a token
-                        var token = jwt.sign(loginuser.toJSON(), settings.secret);
-                        //return the information including token as JSON
-                        resolve(({success: true, user: loginuser, token: 'JWT ' + token}));
-                        // resolve("Successfully loged in...");
-                    }
-                    else {
-                        reject("Authentication failed, Wrong password");
-                    }
-                });
+registration.prototype.createUser = function(userData,callback) {
+    if(userData.password === userData.confirmPassword) {
+        var newUser = new User({
+            'firstname': userData.firstname,
+            'lastname': userData.lastname,
+            'username': userData.username,
+            'password': userData.password
+        });
+
+        newUser.save(function(err, result) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, result);
             }
         });
+    } else {
+        callback('Password does not match.', null);
+    }
+},
+
+registration.prototype.login = function(loginDetails,userData, callback) {
+    //check if password matches
+    bcrypt.compare(loginDetails.password, userData.password, function(err, isMatch) {
+        if(isMatch && !err) {
+            //if user is found and password is right create a token
+            var token = jwt.sign(userData.toJSON(), settings.secret);
+            //return the information including token as JSON
+            callback(({success: true, user: userData, token: 'JWT ' + token}));
+        }
+        else {
+            callback(null,'Authentication failed, Wrong password.');
+        }
     });
 }
 
 module.exports = new registration;
+

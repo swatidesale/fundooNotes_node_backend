@@ -8,7 +8,30 @@ function isEmail(email) {
     }
 }
 
-exports.createUser = function(req,res) {
+exports.forgotPassword = function(req,res) {
+    req.checkBody('username','Username is required').notEmpty();
+
+    var errors = req.validationErrors();
+    if(errors) {
+        res.send({success: false, msg: errors});
+    }
+    else if(!isEmail(req.body.username)) {
+        res.send({success: false, msg: 'Invalid username.'});
+    }
+    else {
+        var userDetails = req.body;
+
+        userServices.forgotPassword(userDetails)
+            .then(user => {
+                res.send(user);
+            })
+            .catch(err => {
+                res.send(err);
+            });
+    }
+}
+
+exports.signUp = function(req,res) {
     req.checkBody('firstname','firstname is required').notEmpty();
     req.checkBody('lastname','lastname is required').notEmpty();
     req.checkBody('username','Username is required').notEmpty();
@@ -17,41 +40,32 @@ exports.createUser = function(req,res) {
 
     var errors = req.validationErrors();
     if (errors) {
-        res.send({success: false, msg: 'All fields are required'});
+        res.send({success: false, msg: errors});
     }
     else if(!isEmail(req.body.username)) {
         res.send({success: false, msg: 'Invalid Email Address.'});
     } 
-    // req.checkBody('username', 'Username is required').notEmpty();
-    // else if(!req.body.firstname) {
-    //     res.send({success: false, msg: 'Firstname is required.'});
-    // } else if(!req.body.lastname) {
-    //     res.send({success: false, msg: 'Lastname is required.'});
-    // } else if(!req.body.username) {
-    //     res.send({suucess: false, msg: 'Username is required.'});
-    // } else if(!req.body.password) {
-    //     res.send({success: false, msg: 'Password is required.'})
-    // }
     else {
         var userData = req.body;
 
-        userServices.createUser(userData) 
-            .then(user => {
-                res.send(user);
-            })
-            .catch(err => {
-                res.status(400).send(err);
-            });
+        userServices.signUp(userData,function(err,result) {
+            if(err) {
+                res.json({err: err});
+            }
+            else {
+                res.json({data: result});
+            }
+        }); 
     }
-}
+},
 
-exports.login = function(req,res) {
+exports.signIn = function(req,res) {
     req.checkBody('username','Username is required').notEmpty();
     req.checkBody('password','Password is required').notEmpty();
 
     var errors = req.validationErrors();
     if(errors) {
-        res.send({success: false, msg: 'All fields are required'});
+        res.send({success: false, msg: errors});
     }
     else if(!isEmail(req.body.username)) {
         res.send({success: false, msg: 'Invalid username'});
@@ -59,12 +73,13 @@ exports.login = function(req,res) {
     else {
         var loginDetails = req.body;
 
-        userServices.login(loginDetails)
-            .then(user => {
-                res.send(user);
-            })
-            .catch(err => {
-                res.status(400).send(err);
-            });
+        userServices.signIn(loginDetails,function(err,result) {
+            if(err) {
+                res.json({err: err});
+            }
+            else {
+                res.json({data: result});
+            }
+        });
     }
 }

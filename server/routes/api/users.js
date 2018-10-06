@@ -6,9 +6,10 @@ router.use(expressValidator());
 
 const userController = require('../../controllers/userController');
 
-router.post('/register',userController.createUser);
-router.post('/login',userController.login);
-// router.post('/forgot',userServices.forgotPassword);
+router.post('/register',userController.signUp);
+router.post('/login',userController.signIn);
+router.post('/forgot',userController.forgotPassword);
+// router.put('/register/:id',userController.update);
 // router.post('/reset/:token',userServices.resetPassword);
 
 module.exports = router;
