@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+require('dotenv').config('./env');
 
 const users = require('./server/routes/api/users');
 // const notes = require('./server/routes/api/notes');
@@ -13,7 +14,7 @@ const app = express();
 app.use(bodyParser.json());
 
 //DB Config
-const db = require('./server/config/keys').mongoURI;
+const db = require('./server/config/database').mongoURI;
 
 //Connect to mongo
 mongoose.connect(db,{ useNewUrlParser: true })

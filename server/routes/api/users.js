@@ -10,7 +10,7 @@ router.post('/register',userController.signUp);
 router.post('/login',userController.signIn);
 router.post('/forgot',userController.forgotPassword);
 // router.put('/register/:id',userController.update);
-// router.post('/reset/:token',userServices.resetPassword);
+router.post('/reset/:token',userController.resetPassword);
 
 module.exports = router;
 

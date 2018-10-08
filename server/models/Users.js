@@ -65,35 +65,12 @@ function registration() {
 
 }
 
-registration.prototype.sendMail = function(username,subject,text) {
-    return new Promise(function(resolve,reject) {
-        var smtpTransport = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-                user: 'sadesale94@gmail.com',
-                pass: 'Sdesale25#' 
-            }
-        });
-        var mailOptions = {
-            to: username,
-            from: 'sadesale94@gmail.com',
-            subject: subject,
-            text: text
-        };
-        smtpTransport.sendMail(mailOptions, function(err) {
-            resolve(true);
-        });
-    })
-},
-
 registration.prototype.findByEmail = function(username,callback) {
     User.findOne({username: username},function(err,newuser) {
         if(newuser) {
-            console.log("New user..",newuser);
             callback(null,newuser);
         }
         else {
-            console.log("Error...",err);
             callback(err,null);
         }
     });
@@ -131,6 +108,56 @@ registration.prototype.login = function(loginDetails,userData, callback) {
         }
         else {
             callback(null,'Authentication failed, Wrong password.');
+        }
+    });
+},
+
+registration.prototype.sendMail = function(username, subject, text, callback) {
+    var smtpTransport = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'sadesale94@gmail.com',
+            pass: 'Sdesale25#' 
+        }
+    });
+    var mailOptions = {
+        to: username,
+        from: 'sadesale94@gmail.com',
+        subject: subject,
+        text: text
+    };
+    smtpTransport.sendMail(mailOptions, function(err,result) {
+        if(err) {
+            callback(err,null);
+        }
+        else {
+            result = true;
+            callback(null,result);
+        }
+    });
+},
+
+registration.prototype.resetPassword = function(userData, token, callback) {
+    User.findOne({resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now()}}, function(err,result) {
+        if(err) {
+            callback(err,null);
+        }
+        else if(!result) {
+            result = false;
+            callback(null,result);
+        }
+        else {
+            result.password = userData.password;
+            result.resetPasswordToken = undefined;
+            result.resetPasswordExpires = undefined; 
+
+            result.save(function(err, user) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, user);
+                }
+            });
         }
     });
 }
