@@ -1,12 +1,15 @@
 const express = require('express');
+const expressValidator = require('express-validator');
+
 const router = express.Router();
+router.use(expressValidator());
 
-const noteServices = require('../../services/noteServices');
+const noteController = require('../../controllers/noteController');
 
-router.post('/notes',noteServices.createNote);
-router.get('/notes',noteServices.displayNotes);
-router.delete('/notes/:id',noteServices.removeNote);
-router.put('/notes/:id',noteServices.updateNote);
-router.post('/sharenote',noteServices.shareNote);
+router.post('/notes',noteController.createNewNote);
+// router.get('/notes',noteServices.displayNotes);
+// router.delete('/notes/:id',noteServices.removeNote);
+// router.put('/notes/:id',noteServices.updateNote);
+// router.post('/sharenote',noteServices.shareNote);
 
 module.exports = router;

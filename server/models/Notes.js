@@ -41,4 +41,35 @@ const NoteSchema = new Schema({
     }
 });
 
-module.exports = Note = mongoose.model('Note',NoteSchema)
+var Note = mongoose.model('servernote',NoteSchema);
+
+function noteOperations() {
+
+}
+
+/*----- Save Note -----*/
+//Service to create a new note
+noteOperations.prototype.createNote = function(noteData, callback) {
+    var newNote = new Note({
+        'notetitle': noteData.notetitle,
+        'notedata': noteData.notedata,
+        'userId': noteData.userId,
+        'ispin': noteData.ispin,
+        'istrash': noteData.istrash,
+        'isarchive': noteData.isarchive,
+        'background': noteData.background,
+        'reminder': noteData.reminder,
+        'label': noteData.label
+    });
+
+    newNote.save(function(err, note) {
+        if(err) {
+            callback(err, null);
+        }
+        else {
+            callback(null,note);
+        }
+    });
+}
+
+module.exports = new noteOperations;

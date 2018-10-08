@@ -1,5 +1,11 @@
 const userServices = require('../services/userServices');
 
+/*
+ * Check if valid email
+ * 
+ * @param email
+ * @return
+*/
 function isEmail(email) {
     if (email.match(/^[\w]{1,}[\w.+-]{0,}@[\w-]{2,}([.][a-zA-Z]{2,}|[.][\w-]{2,}[.][a-zA-Z]{2,})$/)) 
         return true;
@@ -7,6 +13,12 @@ function isEmail(email) {
         return false;
 }
 
+/*
+ * Check Password Length
+ * 
+ * @param password
+ * @return
+*/
 function checkPasswordLength(password) {
     if((password.length) >= 8)
         return true;
@@ -21,6 +33,13 @@ function checkPasswordLength(password) {
 //         return false;
 // }
 
+/*
+ * Check if password is same as username
+ *   
+ * @param username
+ * @param password
+ * @return
+*/
 function isPasswordSameAsUsername(username, password) {
     if(username === password) 
         return false;
@@ -28,6 +47,12 @@ function isPasswordSameAsUsername(username, password) {
         return true;
 }
 
+/*
+ * Check if password contains at least one lowercase letter
+ * 
+ * @param password
+ * @return
+*/
 function isContainLowerLetter(password) {
     pattern = /[a-z]/;
     if(password.match(pattern))
@@ -36,6 +61,12 @@ function isContainLowerLetter(password) {
         return false;
 }
 
+/*
+ * Check if password contains at least one uppercase letter
+ * 
+ * @param password
+ * @return
+*/
 function isContainUpperLatter(password) {
     pattern = /[A-Z]/;
     if(password.match(pattern))
@@ -44,6 +75,12 @@ function isContainUpperLatter(password) {
         return false;
 }
 
+/*
+ * Check if password contains at least one number letter
+ * 
+ * @param password
+ * @return
+*/
 function isContainNumber(password) {
     pattern = /[0-9]/;
     if(password.match(pattern))
@@ -59,6 +96,12 @@ function isContainNumber(password) {
 //         return false;
 // }
 
+/*
+ * Controller to sign up a new user
+ * 
+ * @param req
+ * @param res
+*/
 exports.signUp = function(req, res) {
     req.checkBody('firstname','firstname is required').notEmpty();
     req.checkBody('lastname','lastname is required').notEmpty();
@@ -101,6 +144,12 @@ exports.signUp = function(req, res) {
     }
 },
 
+/*
+ * Controller to sign in a user
+ * 
+ * @param req
+ * @param res
+*/
 exports.signIn = function(req, res) {
     req.checkBody('username','Username is required').notEmpty();
     req.checkBody('password','Password is required').notEmpty();
@@ -126,6 +175,12 @@ exports.signIn = function(req, res) {
     }
 },
 
+/*
+ * Controller for forgot password
+ * 
+ * @param req
+ * @param res
+*/
 exports.forgotPassword = function(req, res) {
     req.checkBody('username','Username is required').notEmpty();
 
@@ -150,6 +205,12 @@ exports.forgotPassword = function(req, res) {
     }
 },
 
+/*
+ * Controller to reset a password
+ * 
+ * @param req
+ * @param res
+*/
 exports.resetPassword = function(req, res) {
     req.checkBody('password','password is required').notEmpty();
     req.checkBody('confirmPassword','confirmPassword is required').notEmpty();

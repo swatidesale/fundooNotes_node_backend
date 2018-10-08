@@ -1,6 +1,12 @@
 var crypto = require('crypto');
 const userModel = require('../models/Users');
 
+/*
+ * Service to sign up a new user
+ * 
+ * @param req
+ * @param res
+*/
 exports.signUp = function(userData, callback) {
     var username = userData.username;
     userModel.findByEmail(username,function(err,user) {
@@ -30,6 +36,12 @@ exports.signUp = function(userData, callback) {
     }); 
 },
 
+/*
+ * Service to sign in a user
+ * 
+ * @param req
+ * @param res
+*/
 exports.signIn = function(loginDetails, callback) {
     var username = loginDetails.username;
     userModel.findByEmail(username,function(err,user) {
@@ -54,6 +66,12 @@ exports.signIn = function(loginDetails, callback) {
     });
 },
 
+/*
+ * Service for forgot password
+ * 
+ * @param req
+ * @param res
+*/
 exports.forgotPassword = function(userDetails, callback) {
     var username = userDetails.username;
     userModel.findByEmail(username, function(err, user) {
@@ -90,6 +108,12 @@ exports.forgotPassword = function(userDetails, callback) {
     })
 },
 
+/*
+ * Service to reset a password
+ * 
+ * @param req
+ * @param res
+*/
 exports.resetPassword = function(userDetails, token, callback) {
     userModel.resetPassword(userDetails, token, function(err, result) {
         if(err) {

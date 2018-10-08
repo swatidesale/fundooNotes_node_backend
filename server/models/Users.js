@@ -5,7 +5,7 @@ var nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt-nodejs');
 const settings = require('../config/settings');
 
-// Create User Schema
+//Create User Schema
 const UserSchema = new Schema({
     firstname: {
         type: String,
@@ -37,6 +37,11 @@ const UserSchema = new Schema({
     }
 });
 
+
+/*
+ * Function to encrypt password
+ * 
+*/
 UserSchema.pre('save', function(next) {
     var user = this;
       // Check if document is new or a new password has been set
@@ -65,6 +70,13 @@ function registration() {
 
 }
 
+
+/*
+ * api to find user by email-id
+ * 
+ * @param username
+ * @param callback
+*/
 registration.prototype.findByEmail = function(username,callback) {
     User.findOne({username: username},function(err,newuser) {
         if(newuser) {
@@ -76,6 +88,12 @@ registration.prototype.findByEmail = function(username,callback) {
     });
 },
 
+/*
+ * api to create a new user
+ * 
+ * @param userData
+ * @param callback
+*/
 registration.prototype.createUser = function(userData,callback) {
     if(userData.password === userData.confirmPassword) {
         var newUser = new User({
@@ -97,6 +115,13 @@ registration.prototype.createUser = function(userData,callback) {
     }
 },
 
+/*
+ * api to login a user
+ * 
+ * @param loginDetails
+ * @param userData
+ * @param callback
+*/
 registration.prototype.login = function(loginDetails,userData, callback) {
     //check if password matches
     bcrypt.compare(loginDetails.password, userData.password, function(err, isMatch) {
@@ -112,6 +137,14 @@ registration.prototype.login = function(loginDetails,userData, callback) {
     });
 },
 
+/*
+ * api to send email
+ * 
+ * @param username
+ * @param subject
+ * @param text
+ * @param callback
+*/
 registration.prototype.sendMail = function(username, subject, text, callback) {
     var smtpTransport = nodemailer.createTransport({
         service: 'Gmail',
@@ -137,6 +170,13 @@ registration.prototype.sendMail = function(username, subject, text, callback) {
     });
 },
 
+/*
+ * api to reset a password
+ * 
+ * @param userData
+ * @param token
+ * @param callback
+*/
 registration.prototype.resetPassword = function(userData, token, callback) {
     User.findOne({resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now()}}, function(err,result) {
         if(err) {
