@@ -1,11 +1,13 @@
 var crypto = require('crypto');
+
+//User Model
 const userModel = require('../models/Users');
 
 /*
  * Service to sign up a new user
  * 
- * @param req
- * @param res
+ * @param userData
+ * @param callback
 */
 exports.signUp = function(userData, callback) {
     var username = userData.username;
@@ -39,8 +41,8 @@ exports.signUp = function(userData, callback) {
 /*
  * Service to sign in a user
  * 
- * @param req
- * @param res
+ * @param loginDetails
+ * @param callback
 */
 exports.signIn = function(loginDetails, callback) {
     var username = loginDetails.username;
@@ -69,8 +71,8 @@ exports.signIn = function(loginDetails, callback) {
 /*
  * Service for forgot password
  * 
- * @param req
- * @param res
+ * @param userDetails
+ * @param callback
 */
 exports.forgotPassword = function(userDetails, callback) {
     var username = userDetails.username;
@@ -111,8 +113,9 @@ exports.forgotPassword = function(userDetails, callback) {
 /*
  * Service to reset a password
  * 
- * @param req
- * @param res
+ * @param userDetails
+ * @param token
+ * @param callback
 */
 exports.resetPassword = function(userDetails, token, callback) {
     userModel.resetPassword(userDetails, token, function(err, result) {

@@ -5,8 +5,7 @@ require('dotenv').config('./env');
 
 const users = require('./server/routes/api/users');
 const notes = require('./server/routes/api/notes');
-// const labels = require('./server/routes/api/labels');
-// const images = require('./server/routes/api/images');
+const labels = require('./server/routes/api/labels');
 
 const app = express();
 
@@ -24,9 +23,7 @@ mongoose.connect(db,{ useNewUrlParser: true })
 //Use Routes
 app.use('/api/users',users);
 app.use('/api/notes',notes);
-// app.use('/api/labels',labels);
-// app.use('/api/images',images);
-// app.use(express.static('./public'));
+app.use('/api/labels',labels);
 
 const port = process.env.PORT || 2000;
 

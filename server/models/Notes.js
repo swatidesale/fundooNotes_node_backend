@@ -48,7 +48,12 @@ function noteOperations() {
 }
 
 /*----- Save Note -----*/
-//Service to create a new note
+/*
+ * api to create a new note
+ * 
+ * @param noteData
+ * @param callback
+*/
 noteOperations.prototype.createNote = function(noteData, callback) {
     var newNote = new Note({
         'notetitle': noteData.notetitle,
@@ -65,6 +70,58 @@ noteOperations.prototype.createNote = function(noteData, callback) {
     newNote.save(function(err, note) {
         if(err) {
             callback(err, null);
+        }
+        else {
+            callback(null,note);
+        }
+    });
+},
+
+/*
+ * api to display all notes
+ * 
+ * @param callback
+*/
+noteOperations.prototype.displayAllNotes = function(callback) {
+    Note.find(function(err,note) {
+        if(err) {
+            callback(err,null);
+        }
+        else {
+            callback(null,note);
+        }
+    });
+},
+
+/*
+ * api to update a note
+ * 
+ * @param id
+ * @param noteData
+ * @param callback
+*/
+noteOperations.prototype.updateNote = function(id, noteData, callback) {
+    Note.findByIdAndUpdate(id, noteData, function(err, note) {
+        if(err) {
+            callback(err,null);
+        }
+        else {
+            callback(null,note);
+        }
+    });
+},
+
+/*
+ * api to delete a note
+ * 
+ * @param id
+ * @param noteData
+ * @param callback
+*/
+noteOperations.prototype.deleteNote = function(id, noteData, callback) {
+    Note.findByIdAndRemove(id, noteData, function(err, note) {
+        if(err) {
+            callback(err,null);
         }
         else {
             callback(null,note);

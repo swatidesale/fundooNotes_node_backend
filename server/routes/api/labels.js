@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const labelServices = require('../../services/labelServices');
+const labelController = require('../../controllers/labelController');
 
-router.post('/labels',labelServices.createLabel);
-router.get('/labels',labelServices.displayLabels);
-router.delete('/labels/:id',labelServices.removeLabel);
-router.put('/labels/:id',labelServices.updateLabel);
+//Routes for label functionality
+router.post('/labels',labelController.createNewLabel);
+router.get('/labels',labelController.displayLabels);
+router.delete('/labels/:id',labelController.deleteLabel);
+router.put('/labels/:id',labelController.updateLabel);
 
 module.exports = router;

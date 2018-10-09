@@ -1,44 +1,72 @@
 //Label Model
-const Label = require('../models/Labels');
+const labelModel = require('../models/Labels');
 
-//Service to display all labels
-exports.displayLabels = function(req,res) {
-    Label.find()
-        .sort({ newlabel: -1 })
-        .then(label => res.json(label));
-}
-
-/*----- Save Note -----*/
-//Service to create a new label
-exports.createLabel = function(req,res) {
-    const newLabel = new Label({
-        newlabel: req.body.newlabel,
-        userId: req.body.userId
-    });
-
-    newLabel.save((err) => {
+/*
+ * Service to create a new label
+ * 
+ * @param labelData
+ * @param callback
+*/
+exports.createLabel = function(labelData, callback) {
+    labelModel.createLabel(labelData, function(err,label) {
         if(err) {
-            console.log("Failed",err);
-            return res.json({success: false, msg: "Failed"});
+            callback(err,null);
         }
-        res.json({success: true, msg: "Successful."});
+        else {
+            callback(null,label);
+        }
     });
-}
+},
 
-/*----- Delete Note ------*/
-//Service to remove a label
-exports.removeLabel = function(req, res, next) {
-    Label.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-      if (err) return next(err);
-      res.json(post);
+/*
+ * Service to display all labels
+ * 
+ * @param callback
+*/
+exports.displayAllLabels = function(callback) {
+    labelModel.displayAllLabels(function(err,label) {
+        if(err) {
+            callback(err,null);
+        }
+        else {
+            callback(null,label);
+        }
+    });
+},
+ 
+/*
+ * Service to update a label
+ * 
+ * @param id
+ * @param labelData
+ * @param callback
+*/
+exports.updateLabel = function(id, labelData, callback) {
+    labelModel.updateLabel(id, labelData, function(err, label) {
+        if(err) {
+            callback(err,null);
+        }
+        else {
+            callback(null,label);
+        }
+    });
+},
+
+/*
+ * Service to delete a note
+ * 
+ * @param id
+ * @param labelData
+ * @param callback
+*/
+exports.deleteLabel = function(id, labelData, callback) {
+    labelModel.deleteLabel(id, labelData, function(err, label) {
+        if(err) {
+            callback(err,null);
+        }
+        else {
+            callback(null,label);
+        }
     });
 }
-  
-/*----- Update Note ------*/
-//Service to update a label
-exports.updateLabel = function(req,res,next) {
-    Label.findByIdAndUpdate(req.params.id, req.body, function(err, post) {
-        if(err) return next(err);
-        res.json(post);
-    });
-}
+ 

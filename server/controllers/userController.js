@@ -99,8 +99,8 @@ function isContainNumber(password) {
 /*
  * Controller to sign up a new user
  * 
- * @param req
- * @param res
+ * @param {Object} req
+ * @param {Object} res
 */
 exports.signUp = function(req, res) {
     req.checkBody('firstname','firstname is required').notEmpty();
@@ -147,8 +147,8 @@ exports.signUp = function(req, res) {
 /*
  * Controller to sign in a user
  * 
- * @param req
- * @param res
+ * @param {Object} req
+ * @param {Object} res
 */
 exports.signIn = function(req, res) {
     req.checkBody('username','Username is required').notEmpty();
@@ -178,8 +178,8 @@ exports.signIn = function(req, res) {
 /*
  * Controller for forgot password
  * 
- * @param req
- * @param res
+ * @param {Object} req
+ * @param {Object} res
 */
 exports.forgotPassword = function(req, res) {
     req.checkBody('username','Username is required').notEmpty();
@@ -208,8 +208,8 @@ exports.forgotPassword = function(req, res) {
 /*
  * Controller to reset a password
  * 
- * @param req
- * @param res
+ * @param {Object} req
+ * @param {Object} res
 */
 exports.resetPassword = function(req, res) {
     req.checkBody('password','password is required').notEmpty();

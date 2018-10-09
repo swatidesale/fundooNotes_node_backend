@@ -6,10 +6,10 @@ router.use(expressValidator());
 
 const noteController = require('../../controllers/noteController');
 
+//routes for note functionality
 router.post('/notes',noteController.createNewNote);
-// router.get('/notes',noteServices.displayNotes);
-// router.delete('/notes/:id',noteServices.removeNote);
-// router.put('/notes/:id',noteServices.updateNote);
-// router.post('/sharenote',noteServices.shareNote);
+router.get('/notes',noteController.displayNotes);
+router.delete('/notes/:id',noteController.deleteNote);
+router.put('/notes/:id',noteController.updateNote);
 
 module.exports = router;
